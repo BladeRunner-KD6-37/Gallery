@@ -9,14 +9,11 @@ import Spinner from './Spinner'
 import PhotoCard from './PhotoCard'
 
 export function Gallery() {
-  // Keep 30 photos loaded per page and request another API page when this changes
-  const [page, setPage] = useState(1)
-
   // Local state for search query string
   const [query, setQuery] = useState('')
 
   // Fetch photos via custom hook — Gallery does not fetch data directly
-  const { photos, loading, error } = useFetchPhotos(page)
+  const { photos, loading, error } = useFetchPhotos()
 
   // Manage favourites with useReducer, using loadFavourites as lazy initializer to read from localStorage once
   const [favourites, dispatch] = useReducer(favouritesReducer, [], loadFavourites)
@@ -38,14 +35,6 @@ export function Gallery() {
   // useCallback keeps the toggle function reference stable so child PhotoCards don't receive new references unnecessarily
   const handleToggleFavourite = useCallback((id) => {
     dispatch({ type: TOGGLE_FAVOURITE, payload: id })
-  }, [])
-
-  const handlePreviousPage = useCallback(() => {
-    setPage((currentPage) => Math.max(1, currentPage - 1))
-  }, [])
-
-  const handleNextPage = useCallback(() => {
-    setPage((currentPage) => currentPage + 1)
   }, [])
 
   // useMemo computes the filtered list and only re-filters when photos or query change.
@@ -111,31 +100,6 @@ export function Gallery() {
         </div>
       )}
 
-      {!loading && !error && (
-        <nav
-          aria-label="Photo pages"
-          className="mt-10 flex items-center justify-center gap-4"
-        >
-          <button
-            type="button"
-            onClick={handlePreviousPage}
-            disabled={page === 1}
-            className="rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 transition-colors hover:bg-gray-100 disabled:cursor-not-allowed disabled:opacity-50"
-          >
-            Previous
-          </button>
-          <span className="text-sm font-medium text-gray-700">
-            Page {page}
-          </span>
-          <button
-            type="button"
-            onClick={handleNextPage}
-            className="rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 transition-colors hover:bg-gray-100"
-          >
-            Next
-          </button>
-        </nav>
-      )}
     </div>
   )
 }

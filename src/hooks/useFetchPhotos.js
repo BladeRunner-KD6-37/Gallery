@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 
-// Custom hook to fetch one page of photos from the Lorem Picsum API
-export function useFetchPhotos(page = 1) {
+// Custom hook to fetch 30 photos from the Lorem Picsum API
+export function useFetchPhotos() {
   // Photos array holds fetched photo objects; starts as an empty list
   const [photos, setPhotos] = useState([])
   // Loading indicates fetch status; starts true since fetch triggers immediately on mount
@@ -19,7 +19,7 @@ export function useFetchPhotos(page = 1) {
         setError(null)
 
         const response = await fetch(
-          `https://picsum.photos/v2/list?page=${page}&limit=30`,
+          'https://picsum.photos/v2/list?limit=30',
           {
             signal: controller.signal,
           }
@@ -56,7 +56,7 @@ export function useFetchPhotos(page = 1) {
     return () => {
       controller.abort()
     }
-  }, [page]) // Fetch the selected page whenever pagination changes
+  }, [])
 
   // Return the required state object
   return { photos, loading, error }
